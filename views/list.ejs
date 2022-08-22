@@ -5,6 +5,32 @@
     <title></title>
   </head>
   <body>
-    <h1>It's a <%= kindofDay %></h1>
+<ul>
+
+  <% newListItems.forEach((item) => {  %>
+    <li><%= item %> </li>
+  <%});%>
+
+</ul>
+
+   <!-- <% if (kindofDay==='Sunday' || kindofDay==='Saturday' ){ %>
+       <h1 style="color:green"><%= kindofDay %> Lista de Tareas</h1>
+    <% }else{ %>
+      <h1 style="color:yellow"><%= kindofDay %> Lista de Tareas</h1>
+    <% } %> -->
+
+<h1><%=kindofDay  %></h1>
+
+<form action="/" method="post">
+<input type="text" name="texto">
+<button type="submit" >Enviar</button>
+</form>
+
+<!-- <form  action="/" method="post">
+<label for="cityInput">City Name</label>
+<input id="cityInput" type="text" name="cityName">
+<button type="submit">Go</button>
+</form> -->
+
   </body>
 </html>
