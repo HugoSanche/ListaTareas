@@ -3,34 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-<ul>
 
+
+<div class="box" id="heading">
+  <h1><%=kindofDay  %></h1>
+</div>
+
+<div class="box">
   <% newListItems.forEach((item) => {  %>
-    <li><%= item %> </li>
+    <div class="item">
+      <input type="checkbox" >
+      <p><%= item %> </p>
+    </div>
   <%});%>
-
-</ul>
-
-   <!-- <% if (kindofDay==='Sunday' || kindofDay==='Saturday' ){ %>
-       <h1 style="color:green"><%= kindofDay %> Lista de Tareas</h1>
-    <% }else{ %>
-      <h1 style="color:yellow"><%= kindofDay %> Lista de Tareas</h1>
-    <% } %> -->
-
-<h1><%=kindofDay  %></h1>
-
-<form action="/" method="post">
-<input type="text" name="texto">
-<button type="submit" >Enviar</button>
-</form>
-
-<!-- <form  action="/" method="post">
-<label for="cityInput">City Name</label>
-<input id="cityInput" type="text" name="cityName">
-<button type="submit">Go</button>
-</form> -->
-
-  </body>
+  <form class = "item" action="/" method="post">
+    <input type="text" name="texto" placeholder="New Item" autocomplete="off">
+    <button type="submit"name="button" >+</button>
+  </form>
+</div>
+</body>
 </html>

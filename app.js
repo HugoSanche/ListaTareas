@@ -9,6 +9,10 @@ var items=["Buy Food","Cook Food","Eat Food"];
 //con este se puede obtener informacion de archivo html o del template ejs.
 //Como por ejemplo traer al informacion que puso el usuario de un input en el archivo html o template ejs
 app.use(bodyParser.urlencoded({extended:true}));
+
+//aqui defines que la carpeta public es una ruta predeterminada de lectura
+app.use(express.static("public"));
+
 //para utilizar el template ejs. En el arhivo html no se puede enviar info entonces se ocupan
 //template para enviar valores. el mas popular es ejs
 app.set('view engine','ejs');
