@@ -1,28 +1,25 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="css/styles.css">
-  </head>
+<%- include ('header'); -%>
   <body>
 
-
 <div class="box" id="heading">
-  <h1><%=kindofDay  %></h1>
+  <h1><%= encabezado  %></h1>
 </div>
 
 <div class="box">
   <% newListItems.forEach((item) => {  %>
-    <div class="item">
+    <div class="item" >
       <input type="checkbox" >
       <p><%= item %> </p>
     </div>
   <%});%>
+
   <form class = "item" action="/" method="post">
-    <input type="text" name="texto" placeholder="New Item" autocomplete="off">
-    <button type="submit"name="button" >+</button>
+    <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+
+    <!-- El bottom lo ocupo para saber que tiene el encabezado (Tareas del dia o la fecha del dia)
+    aqui defino si se va para "/work" o para raiz "/"" -->
+    <button type="submit" name="button" value=<%= encabezado  %> >+</button>
   </form>
 </div>
 </body>
-</html>
+<%- include ('footer'); -%>

@@ -1,5 +1,6 @@
 html {
   background-color: #E4E9FD;
+  /* Es el fondo de pantalla dividida la mitad purpura y la otra azul claro  */
   background-image: -webkit-linear-gradient(65deg, #A683E3 50%, #E4E9FD 50%);
   min-height: 1000px;
   /* font-family: 'helvetica neue'; */
@@ -40,6 +41,8 @@ input:checked+p {
   text-decoration-color: #A683E3;
 }
 
+/* aqui especificas que el atributo solo es para el input llamado type="checkbox". Tienes 2 input uno llamado checkbox
+y otro lamamdo texto */
 input[type="checkbox"] {
   margin: 20px;
 }
@@ -68,7 +71,7 @@ button {
   padding-bottom: 6px;
   border-width: 0;
 }
-
+/* aqui especificas que el cambio solo es para el input tipo text */
 input[type="text"] {
   text-align: center;
   height: 60px;
@@ -94,4 +97,5 @@ footer {
   color: white;
   color: rgba(0, 0, 0, 0.5);
   text-align: center;
+   margin-top: 300px;
 }
