@@ -1,47 +1,14 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const date =require(__dirname+"/date.js");
 
-const mongoose=require("mongoose");
 const app = express();
 
 
-mongoose.connect("mongodb://localhost:27017/doListDB",{useNewUrlParser: true});
-
-// const itemsSchema= new mongoose.Schema({
-//   name: String
-// });
-
-const itemsSchema= {
-  name: String
-};
-
-const Item=mongoose.model("Item",itemsSchema);
-
-const Actividad4= new Item({
-  name:"Dia 4"
-});
-
-const Actividad5= new Item({
-  name:"Dia 5"
-});
-
-const Actividad6= new Item({
-  name:"Dia 6"
-});
-
-const defaulItems =[Actividad4, Actividad5,Actividad6];
-
-
-Item.insertMany(defaulItems,function(err){
-    if(err){
-      console.log("ups fail insert "+err);
-    }
-    else{
-      console.log("Insert succesfully");
-    }
-});
-
+//aunque sea constante se pueden agregar nuevos valores a los arreglos
+const items= ["Buy Food", "Cook Food", "Eat Food"];
+const workItems = [];
 //con este se puede obtener informacion de archivo html o del template ejs.
 //Como por ejemplo traer al informacion que puso el usuario de un input en el archivo html o template ejs
 app.use(bodyParser.urlencoded({
@@ -60,7 +27,7 @@ app.get("/", function(req, res) {
 
 const day=date.getDate();
   res.render("list", {
-    encabezado: "Today",
+    encabezado: day,
     newListItems: items
   });
 });
