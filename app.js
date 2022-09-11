@@ -33,15 +33,6 @@ const Actividad6= new Item({
 const defaulItems =[Actividad4, Actividad5,Actividad6];
 
 
-Item.insertMany(defaulItems,function(err){
-    if(err){
-      console.log("ups fail insert "+err);
-    }
-    else{
-      console.log("Insert succesfully");
-    }
-});
-
 //con este se puede obtener informacion de archivo html o del template ejs.
 //Como por ejemplo traer al informacion que puso el usuario de un input en el archivo html o template ejs
 app.use(bodyParser.urlencoded({
@@ -55,33 +46,74 @@ app.use(express.static("public"));
 //template para enviar valores. el mas popular es ejs
 app.set('view engine', 'ejs');
 
-app.get("/", function(req, res) {
-  //res.send("Hello");
 
-const day=date.getDate();
-  res.render("list", {
-    encabezado: "Today",
-    newListItems: items
-  });
+app.get("/", function(req, res) {
+
+    Item.find(function(err, temas){
+        //console.log(temas.length);
+        if(temas.length===0){
+          Item.insertMany(defaulItems,function(err){
+              if(err){
+                console.log("ups fail insert "+err);
+              }
+              else{
+                console.log("Insert succesfully");
+              }
+          });
+          res.redirect("/");
+        }
+        else{
+          res.render("list", {
+                             encabezado: "Today",
+                             newListItems: temas
+                             });
+            }
+    });
 });
+
 
 app.post("/", function(req, res) {
-  console.log(req.body);
-  //console.log(req.body.texto);
+const newItem=req.body.newItem;
 
-  //Checa si el elemento button en value "variable encabezado" del archivo list.ejs es "Tareas del dia o la fecha del dia"
-  if (req.body.button === "Tareas") {
-    workItems.push(req.body.newItem);
-    res.redirect("/work");
-  } else {
-    item = req.body.newItem;
-    items.push(item);
-    //te redirige al inicio, pero en la variable item ya tiene el valor de "req.body.texto"
-    res.redirect("/");
-  }
-  //res.render("list",{newListItem:item});
+//Forma 1 de insetar registro
+const item= new Item({
+  name:newItem
+})
+item.save();
+res.redirect("/");
+
+//Forma 2 de insertar Registro
+// Item.collection.insertOne({name:newItem},function(err){
+//   if (err){
+//     console.log("The new item insert fail");
+//   }
+//   else {
+//     res.redirect("/");
+//     console.log("New item its inserted");
+//   }
+// });
+
 });
 
+app.post("/deleted",function(req, res){
+//  const { ObjectId } = require('mongodb');
+//  const _id = ObjectId(req.body);
+//  id = mongoose.Types.ObjectId(req.body);
+//var str = req.body;
+ //var mongoObjectId = mongoose.Types.ObjectId(str);
+  console.log(req.body);
+  //console.log(id);
+
+  Item.deleteOne(req.body,function(err){
+    if (err){
+      console.log("a error when try to delte item "+err);
+    }
+    else{
+      console.log("Item was deleted");
+    }
+  });
+  res.redirect("/");
+});
 
 app.get("/work", function(req, res) {
   res.render("list", {
