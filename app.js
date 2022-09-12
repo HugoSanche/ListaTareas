@@ -32,6 +32,13 @@ const Actividad6= new Item({
 
 const defaulItems =[Actividad4, Actividad5,Actividad6];
 
+const listSchema ={
+  name:String,
+  items:itemsSchema
+}
+
+const Lista=mongoose.model("Lista",listSchema);
+
 
 //con este se puede obtener informacion de archivo html o del template ejs.
 //Como por ejemplo traer al informacion que puso el usuario de un input en el archivo html o template ejs
@@ -73,25 +80,25 @@ app.get("/", function(req, res) {
 
 
 app.post("/", function(req, res) {
-const newItem=req.body.newItem;
+  const newItem=req.body.newItem;
 
-//Forma 1 de insetar registro
-const item= new Item({
-  name:newItem
-})
-item.save();
-res.redirect("/");
+  //Forma 1 de insetar registro
+  const item= new Item({
+    name:newItem
+  })
+  item.save();
+  res.redirect("/");
 
-//Forma 2 de insertar Registro
-// Item.collection.insertOne({name:newItem},function(err){
-//   if (err){
-//     console.log("The new item insert fail");
-//   }
-//   else {
-//     res.redirect("/");
-//     console.log("New item its inserted");
-//   }
-// });
+  //Forma 2 de insertar Registro
+  // Item.collection.insertOne({name:newItem},function(err){
+  //   if (err){
+  //     console.log("The new item insert fail");
+  //   }
+  //   else {
+  //     res.redirect("/");
+  //     console.log("New item its inserted");
+  //   }
+  // });
 
 });
 
@@ -115,12 +122,41 @@ app.post("/deleted",function(req, res){
   res.redirect("/");
 });
 
-app.get("/work", function(req, res) {
-  res.render("list", {
-    encabezado: "Tareas del dia",
-    newListItems: workItems
-  })
+
+
+app.get("/:id",function(req,res){
+  console.log(req.params.id);
+  const id =req.params.id;
+
+
+  Lista.findOne({name:id},function(err,array){
+    if(err)
+      {
+        console.log("Error "+err);
+        const lista = new Lista({
+          name:id,
+          items:defaulItems
+        });
+          Lista.save();
+      }
+    else{
+      console.log("Hola "+array.name);
+      array.forEach((item, i, x) => {
+        console.log(item.name);
+        });
+      }
+  });
+
 });
+
+// app.get("/work", function(req, res) {
+//   res.render("list", {
+//     encabezado: "Tareas del dia",
+//     newListItems: workItems
+//   })
+// });
+
+
 
 app.get("/about",function(req, res){
   res.render("about");
