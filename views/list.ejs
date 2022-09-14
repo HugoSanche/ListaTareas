@@ -12,6 +12,9 @@
       <input type="checkbox" name="checkbox" value=<%=item._id%> onChange="this.form.submit()" >
       <p><%= item.name %> </p>
     </div>
+    <!-- Se oculta el input, se le pone nombre de "listName" y como valor se pone el encabezado (esto nos permite saber cual
+    item voy a borrar, cual item de que encabezado) -->
+    <input type="hidden" name="listName" value="<%=encabezado%>"> </input>
     </form>
   <%});%>
 

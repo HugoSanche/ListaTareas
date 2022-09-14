@@ -1,8 +1,9 @@
-712
+
 const express = require("express");
 const bodyParser = require("body-parser");
-
 const mongoose=require("mongoose");
+const _=require("lodash"); //trabaja con arreglos tiene varias ultildades
+
 const app = express();
 
 mongoose.connect("mongodb://localhost:27017/doListDB",{useNewUrlParser: true});
@@ -33,9 +34,8 @@ const defaulItems =[Actividad4, Actividad5,Actividad6];
 
 const listSchema ={
   name:String,
-  items:itemsSchema
-}
-
+  items:[itemsSchema]
+};
 const Lista=mongoose.model("Lista",listSchema);
 
 //con este se puede obtener informacion de archivo html o del template ejs.
@@ -50,7 +50,6 @@ app.use(express.static("public"));
 //para utilizar el template ejs. En el arhivo html no se puede enviar info entonces se ocupan
 //template para enviar valores. el mas popular es ejs
 app.set('view engine', 'ejs');
-
 
 app.get("/", function(req, res) {
     //search if item have registers  this method get back an Array
@@ -72,7 +71,7 @@ app.get("/", function(req, res) {
           //si Item ya tiene registros los muestra
           res.render("list", {
                              encabezado: "Today",
-                             newListItems: temas
+                             newListItems: temas //manda el arreglo (temas)de lo que encontro Item 
                              });
             }
     });
@@ -91,12 +90,14 @@ app.post("/", function(req, res) {
     item.save();
     res.redirect("/");
   }
+
   else{
+    //Busca listName en Lista y le agrega un nuevo item http://localhost:3000/work (le agregaria nuevo item a work)
+    //work =listName
     Lista.findOne({name:listName},function(err, foundList ){
-        console.log("El valor es "+foundList);
         foundList.items.push(item);
         foundList.save();
-        res.redirect("/")
+        //res.redirect("/")
       res.redirect("/"+listName);
 
     });
@@ -116,50 +117,61 @@ app.post("/", function(req, res) {
 
 
 app.post("/deleted",function(req, res){
-//  const { ObjectId } = require('mongodb');
-//  const _id = ObjectId(req.body);
-//  id = mongoose.Types.ObjectId(req.body);
-//var str = req.body;
- //var mongoObjectId = mongoose.Types.ObjectId(str);
-  console.log(req.body);
-  //console.log(id);
+  var checkedItemId = req.body.checkbox; //trae el valor del checkbox  del archivo list.ejs ("lo que tiene item._id")
+  var nameTitle=req.body.listName; //trae el valor de listName de la etiqueta input del archivo list.ejs (lo que tiene encabezado)
 
-  Item.deleteOne(req.body,function(err){
-    if (err){
-      console.log("a error when try to delte item "+err);
-    }
-    else{
-      console.log("Item was deleted");
-    }
-  });
-  res.redirect("/");
+ //var mongoObjectId = mongoose.Types.ObjectId(str);
+  //console.log(id);
+if (nameTitle==="Today")
+  {
+    //Delete a item from "Today" where _id=checkedItemId
+    Item.deleteOne({_id:checkedItemId},function(err){
+      if (!err){
+        console.log("Sucessfully deleted checked item.");
+        res.redirect("/");
+      }
+      else
+        console.log("a error when try to delte item "+err);
+    });
+  }
+else{
+     //Delete one item from nameTitle and specific _id
+      Lista.findOneAndUpdate({name:nameTitle},{$pull:{items:{_id:checkedItemId}}}, function(err,foundList)
+        {
+          if(!err)
+            res.redirect("/"+nameTitle);
+           else
+             console.log("An error found "+err);
+        })
+      }
 });
 
 app.get("/:id",function(req,res){
   //app.get('/favicon.ico', (req, res) => res.status(204).end());
   //console.log(req.params.id);
-  const id =req.params.id;
 
+  //npm i lodash
+  const id =_.capitalize(req.params.id);
   //search if "id" exists on Lista, return a object in this case its name is "object"
-  Lista.findOne({name:id},function(err,object){
+  Lista.findOne({name:id},function(err,foundList){
     if(!err) //no error
-      if(!object) // check if exists the object
+      if(!foundList) // check if exists the object
       {
           //create a new list
         const lista = new Lista({
           name:id,
           items:defaulItems
         });
+        console.log("Id "+id+" Items "+defaulItems);
         lista.save();
         res.redirect("/"+id)
       }
     else{
       //show an existis list
-      console.log("se encontro "+object.name);
       //si Item ya tiene registros los muestra
       res.render("list", {
-                         encabezado: id,
-                         newListItems: defaulItems
+                         encabezado: foundList.name,
+                         newListItems: foundList.items
                          });
         }
   });
